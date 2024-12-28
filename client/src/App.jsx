@@ -5,6 +5,7 @@ import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./components/Profile";
 
 
 function App() {
@@ -21,6 +22,14 @@ function App() {
 					element={
 						<ProtectedRoute authentication={true}>
 							<Home />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='/profile'
+					element={
+						<ProtectedRoute authentication={true}>
+							<Profile />
 						</ProtectedRoute>
 					}
 				/>

@@ -86,7 +86,9 @@ const ProfileDropdown = () => {
 			<DropdownMenuContent>
 				<DropdownMenuLabel>{getFullname(userData)}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem className='transform duration-150 ease-linear cursor-pointer hover:font-bold hover:text-white hover:bg-primary'>
+				<DropdownMenuItem className='transform duration-150 ease-linear cursor-pointer hover:font-bold hover:text-white hover:bg-primary' onClick={()=>{
+					navigate('/profile')
+				}}>
 					Profile
 				</DropdownMenuItem>
 
