@@ -10,6 +10,8 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+
 import { useState } from "react";
 
 const Profile = () => {
@@ -31,9 +33,15 @@ const Profile = () => {
 
 	return (
 		<div className='profile w-[100vw] h-[100vh] relative'>
-			<div className='wrapper md:pt-10 py-10 flex flex-col md:flex-row md:gap-10 md:justify-center'>
+			<div className='wrapper md:pt-10 py-20 flex flex-col md:flex-row md:gap-10 md:justify-center'>
 				<div className='profilePic-container md:w-auto w-full flex justify-center items-center relative h-auto'>
 					<div className='profilePic relative'>
+						<div className='saveProfilePic flex justify-center items-center absolute -left-20'>
+							{" "}
+							<Button className=' px-5 py-1  rounded-xl text-white'>
+								save
+							</Button>
+						</div>
 						<Avatar className='w-32 h-32 ring-1 shadow-lg'>
 							<AvatarImage
 								src={image || userData?.profilePic}
