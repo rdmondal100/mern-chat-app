@@ -1,4 +1,4 @@
-import {uploadOnCloudinary} from "../cloudinary/cloudinary.js"
+import {deleteFromCloudinary, uploadOnCloudinary} from "../cloudinary/cloudinary.js"
 import userModel from "../models/user.model.js"
 
 
@@ -67,13 +67,24 @@ export const uploadProfilePic = async (req, res) => {
         // console.log(req)
         const {userId} = req.body
         const imagePath = req.file?.path
+        let oldProfilePic = null
         if (imagePath) { 
+            const userById= await userModel.findById({_id:userId})
+            if(userById?.profilePic){
+                oldProfilePic = userById?.profilePic
+            }
+            console.log("Old Profile pic",oldProfilePic)
+
             const profilePic = await uploadOnCloudinary(imagePath)
             console.log(profilePic)
             console.log(userId)
 
             if (profilePic?.url && userId) {
 
+                if(oldProfilePic){
+                    const deletedOldPic = await deleteFromCloudinary(oldProfilePic)
+                    console.log("Deleted profile pic::",deletedOldPic)
+                }
                 const userByUserId = await userModel.findOneAndUpdate({_id:userId},{
                     profilePic:profilePic?.url
                 },{new:true})

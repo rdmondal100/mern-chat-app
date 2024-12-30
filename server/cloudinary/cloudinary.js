@@ -22,7 +22,8 @@ export const uploadOnCloudinary = async (localFilePath) =>{
         }
     
             const uploadResult = await cloudinary.uploader.upload(localFilePath,{
-                resource_type:'image'
+                resource_type:'image',
+                folder:"mern-chat-app"
             })
             console.log(uploadResult)
             await fs.unlink(localFilePath)
@@ -35,6 +36,24 @@ export const uploadOnCloudinary = async (localFilePath) =>{
     }
 }
 
+
+export const deleteFromCloudinary = async (fileLink) =>{
+    try {
+        console.log(fileLink)
+        const publicId = fileLink.split("/").pop().split(".")[0];
+        if(!publicId){
+            console.log("FileLink is required")
+            return null
+        }
+        const deletedFromCloudinary = await cloudinary.uploader.destroy(`mern-chat-app/${publicId}`)
+        console.log("File deleted",deletedFromCloudinary)
+
+        return deleteFromCloudinary
+    } catch (error) {
+        console.log("Failed to delete the file from cloudinary" , error)
+        
+    }
+}
 
 
 

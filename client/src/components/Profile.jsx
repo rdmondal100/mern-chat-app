@@ -171,7 +171,7 @@ const Profile = () => {
 				/>
 			</span>
 
-			{showProfilePic && (
+			{showProfilePic && (imageFile || userData?.profilePic) && (
 				<div
 					className='fullscreenPicture fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center'
 					onClick={() => setShowProfilePic(false)}

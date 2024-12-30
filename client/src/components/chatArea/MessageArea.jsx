@@ -45,7 +45,8 @@ const MessageArea = () => {
 				message:message
 			});
 			const response = await clearUnreadMessageCount(selectedChat?._id);
-			console.log(response)
+			
+			console.log("Clearing the unread message count??",response)
 			if (response?.success) {
 				allChats.map((chat) => {
 					if (chat?._id === selectedChat?._id) {
@@ -54,7 +55,7 @@ const MessageArea = () => {
 					return chat;
 				});
 			}
-			// console.log(allChats)
+			console.log(allChats)
 		} catch (error) {
 			toast.error(
 				error.message || "Failed to clear unread message count"
@@ -69,10 +70,8 @@ const MessageArea = () => {
 			console.log("Clearing the message count");
 			clearUnreadMessageCountIndb(selectedChat?.lastMessage);
 		}
-	}, [selectedChat?._id]);
 
-	useEffect(() => {
-		socket.on("receive-message", (message) => {
+		socket.off('receive-message').on("receive-message", (message) => {
 			console.log(message);
 
 			const selectedChat = store.getState().chatSlice.selectedChat;
@@ -93,6 +92,7 @@ const MessageArea = () => {
 			console.log(allMessages);
 			if (selectedChat?._id === message?.chatId && message?.sender !== userData?._id) {
 				console.log('trying to clear unread messages')
+				
 				clearUnreadMessageCountIndb(message);
 			}
 		});
@@ -144,7 +144,15 @@ console.log(receiver)
 					}, 2000);
 				}
 		})
-	}, []);
+		
+
+
+
+	}, [selectedChat?._id]);
+
+	// useEffect(() => {
+		
+	// }, []);
 
 	console.log(isTyping)
 

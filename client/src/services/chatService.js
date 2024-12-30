@@ -3,8 +3,9 @@ import axios from "axios"
 
 export const getAllChats = async (userId)=>{
     try {
+        console.log(userId)
         const response = await axios.get("/api/chat/get-all-chat",userId,{withCredentials:true})
-        // console.log(response.data)
+        console.log(response.data)
         return response.data
     } catch (error) {
         

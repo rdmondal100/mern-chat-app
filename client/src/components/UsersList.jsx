@@ -183,6 +183,8 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 		});
 	}, []);
 
+
+
 	console.log(allUsersData);
 	const getUserChatList = !isFocused
 		? 
@@ -197,7 +199,7 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 							.toLowerCase()
 							.includes(searchKey.toLowerCase()))
 		);
-
+console.log(getUserChatList)
 	return (
 		<div className=' flex flex-col gap-4 user-chats-container'>
 			{getUserChatList.length
@@ -208,8 +210,8 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 								(m) => m?._id !== userData?._id
 							);
 						}
-
-						return (
+						console.log(user)
+						return user && (
 							<div
 								onClick={() => {
 									const isAlreadyHasChat = allChats?.find(
