@@ -15,10 +15,17 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUser: (state, action) => {
-            // console.log(action.payload)
-            state.isAuthenticated = action.payload.isAuthenticated
-            state.userData = action.payload.userData
-            state.status = action.payload.status
+            console.log(action.payload)
+            
+            if (action.payload.isAuthenticated) {
+                state.isAuthenticated = action.payload.isAuthenticated
+            }
+            if (action.payload.userData) {
+                state.userData = action.payload.userData
+            }
+            if (action.payload.status) {
+                state.status = action.payload.status
+            }
         },
         setAllUsers: (state, action) => {
             // console.log(action.payload)
@@ -33,6 +40,6 @@ const userSlice = createSlice({
 })
 
 
-export const { setUser, setAllUsers,setOnlineUsers } = userSlice.actions
+export const { setUser, setAllUsers, setOnlineUsers } = userSlice.actions
 
 export default userSlice.reducer

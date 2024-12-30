@@ -1,28 +1,4 @@
 
-// import multer from 'multer'
-
-
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, './public')
-//     },
-//     filename: function (req, file, cb) {
-//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-//         cb(null, file.fieldname + '-' + uniqueSuffix)
-//     }
-// })
-
-
-// const upload = multer({ storage: storage })
-
-
-
-// const uploadPic = upload.single("image")
-
-// export default  uploadPic
-
-
-
 import multer from 'multer';
 
 // Configure storage for multer
@@ -54,7 +30,7 @@ const upload = multer({
 });
 
 // Export middleware for single file upload
-export const uploadSingle = upload.single('image'); // 'profilePic' matches the field name in your frontend form
+export const uploadSingle = upload.single('imageFile'); // 'profilePic' matches the field name in your frontend form
 
 // Export middleware for multiple file uploads
 export const uploadMultiple = upload.array('files', 10); // Allow up to 10 files

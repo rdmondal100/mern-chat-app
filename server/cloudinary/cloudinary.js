@@ -13,7 +13,7 @@ console.log(cloudinary.config())
 console.log("cloudinary")
 
 
-const uploadOnCloudinary = async (localFilePath) =>{
+export const uploadOnCloudinary = async (localFilePath) =>{
     try {
         console.log(localFilePath)
         if(!localFilePath){
@@ -41,4 +41,3 @@ const uploadOnCloudinary = async (localFilePath) =>{
 
 
 
-export default uploadOnCloudinary

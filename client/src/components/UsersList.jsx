@@ -232,9 +232,9 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 									<div
 										className={` ${
 											isSelected(user) && "bg-white"
-										} avatar overflow-hidden bg-primary/20 rounded-full min-w-12 ${onlineUsers?.includes(user?._id) && "ring-2 ring-green-500 "} `}
+										} avatar overflow-hidden bg-primary/20 rounded-full min-w-12 ${onlineUsers?.includes(user?._id) && "ring-2 ring-green-500  "} `}
 									>
-										{onlineUsers?.includes(user?._id)  && <span className=" absolute w-[.87rem] h-[.87rem] bottom-3 border-2 left-12 rounded-full bg-green-600"></span>}
+										{onlineUsers?.includes(user?._id)  && <span className=" absolute w-[.87rem] h-[.87rem] bottom-3 border-2 left-12 rounded-full z-50 bg-green-600"></span>}
 										<Avatar className='w-12 h-12'>
 											<AvatarImage
 												src={user?.profilePic}

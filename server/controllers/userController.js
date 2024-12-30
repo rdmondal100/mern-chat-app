@@ -1,4 +1,4 @@
-import uploadOnCloudinary from "../cloudinary/cloudinary.js"
+import {uploadOnCloudinary} from "../cloudinary/cloudinary.js"
 import userModel from "../models/user.model.js"
 
 
@@ -65,14 +65,25 @@ export const getAllUsers = async (req, res) => {
 export const uploadProfilePic = async (req, res) => {
     try {
         // console.log(req)
+        const {userId} = req.body
         const imagePath = req.file?.path
         if (imagePath) { 
             const profilePic = await uploadOnCloudinary(imagePath)
             console.log(profilePic)
-            if (profilePic) {
+            console.log(userId)
+
+            if (profilePic?.url && userId) {
+
+                const userByUserId = await userModel.findOneAndUpdate({_id:userId},{
+                    profilePic:profilePic?.url
+                },{new:true})
+
+                console.log(userByUserId)
+
                 res.status(200).json({
                     message: "Profile picture upload successfully",
-                    data: profilePic,
+                    success:true,
+                    data: userByUserId,
                 })
             }else{
                 res.status(400).json({
