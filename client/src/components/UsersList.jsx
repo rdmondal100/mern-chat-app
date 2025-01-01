@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { createNewChat } from "../services/chatService";
+import { clearUnreadMessageCount, createNewChat } from "../services/chatService";
 import { setAllChats, setSelectedChat } from "../redux/features/chatSlice";
 import { useNavigate } from "react-router-dom";
 import { formatTimestamp } from "../lib/formateTimestamp";
@@ -10,6 +10,7 @@ import { getAvatarName, getFullname } from "../lib/avatarInfo";
 import { useEffect } from "react";
 import { socket } from "../lib/utils";
 import store from "../redux/store/store";
+import { setAllMessages } from "../redux/features/messageSlice";
 
 const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 	const { allUsersData, userData, onlineUsers } = useSelector((state) => state.userSlice);
@@ -31,6 +32,33 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 			return false;
 		}
 	};
+
+	const clearUnreadMessageCountIndb = async (message) => {
+		try {
+			socket.emit("clear-unread-message", {
+				chatId: selectedChat?._id,
+				members: selectedChat?.members?.map((m) => m._id),
+				message:message
+			});
+			const response = await clearUnreadMessageCount(selectedChat?._id);
+			console.log(response)
+			if (response?.success) {
+				allChats.map((chat) => {
+					if (chat?._id === selectedChat?._id) {
+						return response?.data;
+					}
+					return chat;
+				});
+			}
+			// console.log(allChats)
+		} catch (error) {
+			toast.error(
+				error.message || "Failed to clear unread message count"
+			);
+		}
+	};
+
+
 	const handleStartChat = async (sender, reciver) => {
 		const startChatToast = toast.loading("Trying to start chat");
 		const members = [sender?._id, reciver?._id];
@@ -86,7 +114,7 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 
 			if (chat) {
 				if (chat?._id === selectedChat?._id) {
-					// console.log("Already selected");
+					console.log("Already selected");
 					return;
 				}
 				dispatch(setSelectedChat({ selectedChat: chat }));
@@ -139,7 +167,7 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 			chat?.unreadMessageCount &&
 			chat?.lastMessage?.sender === userId
 		) {
-			console.log(chat?.unreadMessageCount);
+			// console.log(chat?.unreadMessageCount);
 			return chat?.unreadMessageCount;
 		} else {
 			return undefined;
@@ -147,12 +175,42 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 	};
 
 	useEffect(() => {
+		if ( selectedChat && selectedChat?.lastMessage?.sender !== userData?._id) {
+			console.log("Clearing the message count");
+			clearUnreadMessageCountIndb(selectedChat?.lastMessage);
+		}
+
+
 		socket.off("receive-message").on("receive-message", (message) => {
 			console.log(message);
 			const selectedChat = store.getState().chatSlice.selectedChat;
 			// console.log(selectedChat)
 			let allChats = store.getState().chatSlice.allChats;
 			// console.log(allChats)
+			const allMessages = store.getState().messageSlice.allMessages;
+
+
+			if (selectedChat?._id === message?.chatId) {
+				console.log(allMessages);
+
+				dispatch(
+					setAllMessages({
+						allMessages: [
+							...allMessages,
+							message,
+						],
+					})
+				);
+			}
+
+			if (selectedChat?._id === message?.chatId && message?.sender !== userData?._id) {
+				console.log('trying to clear unread messages')
+				clearUnreadMessageCountIndb(message);
+			}
+		
+
+			
+
 
 			if (!selectedChat?._id || selectedChat?._id !== message?.chatId) {
 				console.log(message, "Message recived by the sender");
@@ -167,7 +225,22 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 					return chat;
 				});
 				allChats = updatedChats;
+			}else{
+				const updatedChats = allChats?.map((chat) => {
+					if (chat?._id === message?.chatId) {
+						return {
+							...chat,
+							unreadMessageCount: 0,
+							lastMessage: message,
+						};
+					}
+					return chat;
+				});
+				allChats = updatedChats;
 			}
+			
+
+
 			console.log(allChats)
 			const latestChat = allChats?.find(
 				(chat) => chat?._id === message?.chatId
@@ -179,13 +252,65 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 			console.log(otherChats)
 			allChats = [latestChat, ...otherChats];
 			dispatch(setAllChats({ allChats: allChats }));
-			console.log(allChats);
+			// console.log(allChats);
 		});
-	}, []);
 
 
 
-	console.log(allUsersData);
+		// socket.off("receive-message").on("receive-message", (message) => {
+		// 	console.log(message);
+		// 	const selectedChat = store.getState().chatSlice.selectedChat;
+		// 	// console.log(selectedChat)
+		// 	let allChats = store.getState().chatSlice.allChats;
+		// 	// console.log(allChats)
+		// 	if (!selectedChat?._id || selectedChat?._id !== message?.chatId) {
+		// 		console.log(message, "Message recived by the sender");
+		// 		const updatedChats = allChats?.map((chat) => {
+		// 			if (chat?._id === message?.chatId) {
+		// 				return {
+		// 					...chat,
+		// 					unreadMessageCount: chat?.unreadMessageCount + 1,
+		// 					lastMessage: message,
+		// 				};
+		// 			}
+		// 			return chat;
+		// 		});
+		// 		allChats = updatedChats;
+		// 	}else{
+		// 		const updatedChats = allChats?.map((chat) => {
+		// 			if (chat?._id === message?.chatId) {
+		// 				return {
+		// 					...chat,
+		// 					unreadMessageCount: 0,
+		// 					lastMessage: message,
+		// 				};
+		// 			}
+		// 			return chat;
+		// 		});
+		// 		allChats = updatedChats;
+		// 	}
+			
+
+
+		// 	console.log(allChats)
+		// 	const latestChat = allChats?.find(
+		// 		(chat) => chat?._id === message?.chatId
+		// 	);
+		// 	console.log(latestChat)
+		// 	const otherChats = allChats?.filter(
+		// 		(chat) => chat?._id !== message?.chatId
+		// 	);
+		// 	console.log(otherChats)
+		// 	allChats = [latestChat, ...otherChats];
+		// 	dispatch(setAllChats({ allChats: allChats }));
+		// 	// console.log(allChats);
+		// });
+	}, [selectedChat?._id]);
+
+
+
+	// console.log(allUsersData);
+	
 	const getUserChatList = !isFocused
 		? 
 		allChats
@@ -210,7 +335,7 @@ console.log(getUserChatList)
 								(m) => m?._id !== userData?._id
 							);
 						}
-						console.log(user)
+						// console.log(user)
 						return user && (
 							<div
 								onClick={() => {

@@ -1,9 +1,9 @@
+import { axiosInstance } from "../lib/utils"
 
-import axios from 'axios'
 
 export const signUpUser = async (user) => {
     try {
-        const response = await axios.post("/api/auth/signup", user)
+        const response = await axiosInstance.post("/api/auth/signup", user)
         return response.data
 
     } catch (error) {
@@ -16,7 +16,7 @@ export const signUpUser = async (user) => {
 
 export const loginUser = async (user) => {
     try {
-        const response = await axios.post('/api/auth/login', user)
+        const response = await axiosInstance.post('/api/auth/login', user)
         return response.data
     } catch (error) {
         return error.response
@@ -26,7 +26,7 @@ export const loginUser = async (user) => {
 
 export const logOutUser = async () => {
     try {
-        const response = await axios.post('/api/auth/logout',)
+        const response = await axiosInstance.post('/api/auth/logout',)
         return response.data
     } catch (error) {
         return error.response

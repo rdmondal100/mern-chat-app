@@ -1,10 +1,11 @@
-import axios from "axios"
+import { axiosInstance } from "../lib/utils"
+
 
 
 export const getAllChats = async (userId)=>{
     try {
         console.log(userId)
-        const response = await axios.get("/api/chat/get-all-chat",userId,{withCredentials:true})
+        const response = await axiosInstance.get("/api/chat/get-all-chat",userId,{withCredentials:true})
         console.log(response.data)
         return response.data
     } catch (error) {
@@ -16,7 +17,7 @@ export const getAllChats = async (userId)=>{
 
 export const createNewChat = async (members)=>{
     try {
-        const response = await axios.post("/api/chat/create-new-chat",{members},{withCredentials:true})
+        const response = await axiosInstance.post("/api/chat/create-new-chat",{members},{withCredentials:true})
         // console.log(response.data)
         return response.data
     } catch (error) {
@@ -29,7 +30,7 @@ export const createNewChat = async (members)=>{
 
 export const clearUnreadMessageCount = async (chatId)=>{
     try {
-        const response = await axios.post("/api/chat/clear-unread-message",{chatId},{withCredentials:true})
+        const response = await axiosInstance.post("/api/chat/clear-unread-message",{chatId},{withCredentials:true})
         // console.log(response.data)
         return response.data
     } catch (error) {

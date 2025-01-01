@@ -19,7 +19,7 @@ const MessageAreaChatHeader = () => {
 
 	
 	return (
-		<div className='chatheader h-16  bg-muted flex items-center py-1  px-2  backdrop-blur-sm border-b-2 border-b-border rounded-t-lg'>
+		<div className='chatheader h-16  bg-muted flex items-center py-1  px-2  backdrop-blur-sm border-b-2 border-b-border rounded-t-lg fixed md:absolute top-0 w-full z-50'>
 			<IoChevronBackOutline
 				className=' cursor-pointer mr-3 text-xl text-primary'
 				onClick={() => {

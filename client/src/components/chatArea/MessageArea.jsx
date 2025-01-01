@@ -37,65 +37,44 @@ const MessageArea = () => {
 		}
 	};
 
-	const clearUnreadMessageCountIndb = async (message) => {
-		try {
-			socket.emit("clear-unread-message", {
-				chatId: selectedChat?._id,
-				members: selectedChat?.members?.map((m) => m._id),
-				message:message
-			});
-			const response = await clearUnreadMessageCount(selectedChat?._id);
-			
-			console.log("Clearing the unread message count??",response)
-			if (response?.success) {
-				allChats.map((chat) => {
-					if (chat?._id === selectedChat?._id) {
-						return response?.data;
-					}
-					return chat;
-				});
-			}
-			console.log(allChats)
-		} catch (error) {
-			toast.error(
-				error.message || "Failed to clear unread message count"
-			);
-		}
-	};
+	
 
 	useEffect(() => {
 		fetchAllMessages();
 
-		if (selectedChat?.lastMessage?.sender !== userData?._id) {
-			console.log("Clearing the message count");
-			clearUnreadMessageCountIndb(selectedChat?.lastMessage);
-		}
+		// if (selectedChat?.lastMessage?.sender !== userData?._id) {
+		// 	console.log("Clearing the message count");
+		// 	clearUnreadMessageCountIndb(selectedChat?.lastMessage);
+		// }
+	}, [selectedChat?._id]);
 
-		socket.off('receive-message').on("receive-message", (message) => {
-			console.log(message);
+	useEffect(() => {
 
-			const selectedChat = store.getState().chatSlice.selectedChat;
-			const allMessages = store.getState().messageSlice.allMessages;
+		
+		// socket.off('receive-message').on("receive-message", (message) => {
+		// 	console.log(message);
 
-			if (selectedChat?._id === message?.chatId) {
-				console.log(allMessages);
+		// 	const selectedChat = store.getState().chatSlice.selectedChat;
+		// 	const allMessages = store.getState().messageSlice.allMessages;
 
-				dispatch(
-					setAllMessages({
-						allMessages: [
-							...allMessages,
-							message,
-						],
-					})
-				);
-			}
-			console.log(allMessages);
-			if (selectedChat?._id === message?.chatId && message?.sender !== userData?._id) {
-				console.log('trying to clear unread messages')
-				
-				clearUnreadMessageCountIndb(message);
-			}
-		});
+		// 	if (selectedChat?._id === message?.chatId) {
+		// 		console.log(allMessages);
+
+		// 		dispatch(
+		// 			setAllMessages({
+		// 				allMessages: [
+		// 					...allMessages,
+		// 					message,
+		// 				],
+		// 			})
+		// 		);
+		// 	}
+		// 	console.log(allMessages);
+		// 	if (selectedChat?._id === message?.chatId && message?.sender !== userData?._id) {
+		// 		console.log('trying to clear unread messages')
+		// 		clearUnreadMessageCountIndb(message);
+		// 	}
+		// });
 
 		socket.on("message-count-cleared", (unreadMessage) => {
 			const selectedChat = store.getState().chatSlice.selectedChat;
@@ -130,10 +109,15 @@ const MessageArea = () => {
 
 		let typingTimeout
 		socket.on("typing-started",(typing)=>{
-			console.log(typing?.members)
-			console.log(userData?._id)
-			const receiver =  (userData?._id !== typing?.sender) && (typing?.chatId === selectedChat?._id)
-console.log(receiver)
+			// console.log("typing")
+			// console.log(typing)
+			// console.log(typing?.members)
+			// console.log(typing?.chatId)
+			// console.log(selectedChat?._id)
+			const receiver = typing?.chatId ===selectedChat?._id && typing?.sender != userData?._id
+// console.log(receiver)
+// console.log(typing?.chatId,selectedChat?._id)
+// console.log(userData?._id , typing?.sender)
 			if(receiver){
 					setIsTyping(true)
 					
@@ -145,20 +129,13 @@ console.log(receiver)
 				}
 		})
 		
+	}, []);
 
-
-
-	}, [selectedChat?._id]);
-
-	// useEffect(() => {
-		
-	// }, []);
-
-	console.log(isTyping)
+	// console.log(isTyping)
 
 	return (
-		<div className=' flex flex-col gap-3 py-5'>
-			<div className=' w-full flex justify-center items-center flex-col mt-4 gap-2'>
+		<div className=' flex flex-col gap-3 '>
+			<div className=' w-full flex justify-center items-center flex-col mt-10 gap-2'>
 				<Avatar className='w-20 h-20  bg-muted ring-1 ring-ring '>
 					<AvatarImage
 						src={chat?.profilePic}

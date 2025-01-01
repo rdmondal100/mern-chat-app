@@ -24,7 +24,6 @@ const MessageSender = () => {
 			console.log(msg)
 			if (msg.trim()) {
 				console.log(msg,"send like")
-
 				const neMessage = {
 					chatId: selectedChat?._id,
 					sender: userData?._id,
@@ -40,22 +39,15 @@ const MessageSender = () => {
 				const response = await createNewMessage(neMessage);
 				if (response?.success) {
 					console.log(response);
-
-					// console.log(selectedChat);
-					// const updatedChats = allChats?.map((chat) => {
-					// 	console.log(chat);
-					// 	if (chat?._id === selectedChat?._id) {
-					// 		return { ...chat, lastMessage: neMessage };
-					// 	} else {
-					// 		return chat;
-					// 	}
-					// });
-					// dispatch(setAllChats({ allChats: updatedChats }));
-
+					console.log(selectedChat);
+					
 					setMessage("");
-					// const newMessageArray = [...allMessages, response?.data];
-					// dispatch(setAllMessages({ allMessages: newMessageArray }));
-					// console.log(response?.data);
+					const updatedSelectedChat = {...selectedChat,lastMessage:response?.data}
+					console.log("The updated selected chat:::->>>",updatedSelectedChat)
+					dispatch(setSelectedChat({
+						selectedChat:updatedSelectedChat
+					}))
+					
 					if (messageInputRef.current) {
 						messageInputRef.current.innerText = "";
 					}

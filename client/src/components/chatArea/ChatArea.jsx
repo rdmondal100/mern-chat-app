@@ -14,15 +14,15 @@ const ChatArea = () => {
 		}
 	}, [allMessages]);
 	return (
-		<div className=' chatArea h-screen md:h-[95vh]  w-full flex flex-col    rounded-lg bg-card md:mr-2'>
+		<div className=' chatArea h-screen   w-full flex flex-col relative    rounded-lg bg-card md:mr-2'>
 			<MessageAreaChatHeader />
 			<div
-				className='messageArea  h-full px-3 overflow-auto bg-background'
+				className='messageArea  h-full px-3 overflow-auto bg-background my-[50px]'
 				ref={messageAreaContainer}
 			>
 				<MessageArea />
 			</div>
-			<div className='messageSender bottom-0 bg-muted  h-auto   p-2 border-t-2 border-border rounded-b-lg '>
+			<div className='messageSender bottom-0 bg-muted  h-auto   p-2 border-t-2 border-border rounded-b-lg fixed  md:absolute w-full '>
 				<MessageSender />
 			</div>
 		</div>

@@ -1,10 +1,11 @@
-import axios from "axios"
+import { axiosInstance } from "../lib/utils"
+
 
 
 
 export const getLoggedInUserData = async () => {
     try {
-        const response = await axios.get('/api/user/get-logged-user', { withCredentials: true })
+        const response = await axiosInstance.get('/api/user/get-logged-user', { withCredentials: true })
 
         console.log(response.data)
         return response.data
@@ -15,7 +16,7 @@ export const getLoggedInUserData = async () => {
 
 export const getAllUsers = async () => {
     try {
-        const response = await axios.get('/api/user/get-all-users', { withCredentials: true })
+        const response = await axiosInstance.get('/api/user/get-all-users', { withCredentials: true })
 
         console.log(response.data)
         return response.data
@@ -27,7 +28,7 @@ export const getAllUsers = async () => {
 export const uploadProfilePic = async (formData) => {
     try {
         console.log(formData)
-        const response = await axios.post('/api/user/upload-profile-pic', formData, {
+        const response = await axiosInstance.post('/api/user/upload-profile-pic', formData, {
             withCredentials: true,
             headers: {
                 'Content-Type': 'mulipart/form-data'

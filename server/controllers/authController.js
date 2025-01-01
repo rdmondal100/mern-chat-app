@@ -75,7 +75,8 @@ try {
         // set the cookie
         const options = {
             httpOnly : true,
-            secure: true
+            secure: false,
+            sameSite:'Lax',
         }
         res
         .status(200)
@@ -105,7 +106,7 @@ export const logOutUser = async(req,res)=>{
         const token = undefined
         const options = {
             httpOnly : true,
-            secure: true
+            secure: false
         }
         res
         .status(200)

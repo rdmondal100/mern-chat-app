@@ -35,7 +35,7 @@ const Home = () => {
 			socket.emit('join-room',userData?._id)
 			socket.emit('user-connected',userData?._id)
             socket.on("online-users",(onlineUsers)=>{
-				console.log(onlineUsers)
+				// console.log(onlineUsers)
 				dispatch(
 					setOnlineUsers({
 						onlineUsers:onlineUsers
@@ -58,7 +58,7 @@ const Home = () => {
 					<SideBar />
 				</div>
 				<div
-					className={` h-screen md:w-full flex justify-center items-center  ${
+					className={` h-screen  md:w-full flex justify-center items-center  ${
 						selectedChat?._id && " w-full"
 					} chatAreaContainer  md:flex `}
 				>

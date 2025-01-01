@@ -20,17 +20,18 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST']
+        origin: 'http://192.168.0.104:5173',
+        methods: ['GET', 'POST'],
+        credentials:true
     }
 })
 
 
-// const corsOptions = {
-//     origin: 'http://localhost:5173',
-//     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-// }
-// app.use(cors(corsOptions))
+app.use(cors({
+    origin: "http://192.168.0.104:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+}));
 
 
 app.use('/api/auth', authRouter)
@@ -61,11 +62,15 @@ io.on('connection', socket => {
     socket.on('clear-unread-message', (unreadMessage) => {
         // console.log(unreadMessage)
         // console.log(unreadMessage?.members[0])
+        if(unreadMessage?.members[0] && unreadMessage?.members[1]){
+            io
+            .to(unreadMessage?.members[0])
+            .to(unreadMessage?.members[1])
+            .emit('message-count-cleared',unreadMessage)
+        }else{
+            return
+        }
 
-        io
-        .to(unreadMessage?.members[0])
-        .to(unreadMessage?.members[1])
-        .emit('message-count-cleared',unreadMessage)
     })
 
     socket.on('user-typing', (typing) => {
@@ -75,8 +80,6 @@ io.on('connection', socket => {
         .to(typing?.members[1])
         .emit('typing-started',typing)
     })
-
-
 
     socket.on("user-connected",(userId)=>{
         socket.join(userId)

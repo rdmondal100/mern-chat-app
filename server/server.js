@@ -13,9 +13,9 @@ connectDb()
     })
     const port = process.env.PORT || 5555
 
-server.listen(port, () => {
-    console.log(`http://localhost:${port}`)
-})
+    server.listen(port, '0.0.0.0', () => {
+        console.log(`Server running on http://192.168.0.104:${port}`);
+      });
 
 })
 .catch((error)=>{

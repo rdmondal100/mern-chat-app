@@ -71,8 +71,9 @@ const ProtectedRoute = ({ children, authentication = true }) => {
 
 	//set all the user data to the redux state
 	const setAllUsersData = async () => {
-		if (isAuthenticated) {
+		if (status==="unAuthenticated") return
 			try {
+				console.log(isAuthenticated)
 				const response = await getAllUsers();
 				if (response.success) {
 					dispatch(setAllUsers({ allUsersData: response.data }));
@@ -83,34 +84,38 @@ const ProtectedRoute = ({ children, authentication = true }) => {
 				console.log(error);
 				toast.warning(error.message);
 			}
-		}
+		
 	};
 
 	//set all chats to the redux state
 	const setAllChatsData = async () => {
-		if (isAuthenticated) {
+		if (status==='unAuthenticated') return 
+			console.log(isAuthenticated)
 			try {
 				const userId = userData?._id;
 				const response = await getAllChats(userId);
 				// console.log(response);
-				if (response.success) {
-					dispatch(setAllChats({ allChats: response.data }));
-				} else {
-					throw new Error("Failed to fetched all chats");
+				if(userId){
+					if (response.success) {
+						dispatch(setAllChats({ allChats: response.data }));
+					} else {
+						throw new Error("Failed to fetched all chats");
+					}
 				}
 			} catch (error) {
 				console.log(error);
 				toast.warning(error.message);
 			}
-		}
+		
 	};
 	useEffect(() => {
 		if (isAuthenticated) {
-
-			setAllUsersData();
-			setAllChatsData();
+			if(userData){
+				setAllUsersData();
+				setAllChatsData();
+			}
 		}
-	}, [isAuthenticated,status]);
+	}, [isAuthenticated,status,userData]);
 
 	useEffect(() => {
 			setLoggedInUserData();
