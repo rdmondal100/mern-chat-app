@@ -5,7 +5,7 @@ const Searcher = ({ setSearchKey, searchKey, setIsFocused, isFocused }) => {
 	// console.log(isFocused);
 
 	return (
-		<div className=' w-full mt-5 px-2 flex sticky top-0 '>
+		<div className=' w-full  px-2 flex  '>
 			<div className={` relative flex justify-center gap-5 items-center w-full`}>
 				<div
 					className={`${

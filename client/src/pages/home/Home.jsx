@@ -49,9 +49,9 @@ const Home = () => {
 
 	return (
 		<>
-			<main className='flex w-full h-full gap-3  '>
+			<main className='flex w-full h-full gap-3   '>
 				<div
-					className={` sidebarContainer md:w-auto w-full ${
+					className={` sidebarContainer h-screen md:w-auto w-full ${
 						selectedChat?._id && "hidden md:flex"
 					}`}
 				>

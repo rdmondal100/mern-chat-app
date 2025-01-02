@@ -8,7 +8,9 @@ const initialState = {
     userData: null,
     allUsersData: [],
     status: 'idle',
-    onlineUsers: []
+    onlineUsers: [],
+    requests:[],
+    showRequests:false
 }
 const userSlice = createSlice({
     name: "auth",
@@ -35,11 +37,19 @@ const userSlice = createSlice({
             console.log(action.payload)
             state.onlineUsers = action.payload.onlineUsers
         },
+        setFriendRequests:(state,action)=>{
+            console.log(action.payload)
+            state.requests = action.payload.requests
+        },
+        setShowRequests:(state,action)=>{
+            console.log(action.payload)
+            state.showRequests = action.payload.showRequests
+        }
 
     }
 })
 
 
-export const { setUser, setAllUsers, setOnlineUsers } = userSlice.actions
+export const { setUser, setAllUsers, setOnlineUsers,setShowRequests } = userSlice.actions
 
 export default userSlice.reducer
