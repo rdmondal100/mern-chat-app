@@ -21,7 +21,10 @@ const chatSlice = createSlice({
             state.selectedChat = action.payload.selectedChat
         }
 
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase("reset", () => initialState);
+      },
 })
 
 

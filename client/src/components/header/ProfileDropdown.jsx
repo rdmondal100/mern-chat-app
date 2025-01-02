@@ -29,14 +29,7 @@ const ProfileDropdown = () => {
 			const response = await logOutUser();
 			if (response.success) {
 				socket.emit("user-disconnected",userData?._id)
-				dispatch(
-					setUser({
-						status: "unAuthenticated",
-						isAuthenticated: false,
-						userData: null,
-						onlineUsers:[]
-					})
-				);
+				dispatch({type:"reset"});
 				toast.update(logoutToast, {
 					render: response?.message,
 					type: "success",

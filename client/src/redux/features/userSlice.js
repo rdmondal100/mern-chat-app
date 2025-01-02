@@ -46,7 +46,10 @@ const userSlice = createSlice({
             state.showRequests = action.payload.showRequests
         }
 
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase("reset", () => initialState);
+      },
 })
 
 

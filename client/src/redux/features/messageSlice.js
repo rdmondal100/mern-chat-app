@@ -17,7 +17,10 @@ const messageSlice = createSlice({
             // console.log(action.payload)
             state.allMessages = action.payload.allMessages
         }
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase("reset", () => initialState);
+      },
 })
 
 

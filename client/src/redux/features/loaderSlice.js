@@ -10,7 +10,10 @@ const loaderSlice = createSlice({
     reducers:{
         showLoader:(state)=>{state.loader = true},
         hideLoader:(state)=>{state.loader = false}
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase("reset", () => initialState);
+      },
 })
 
 
