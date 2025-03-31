@@ -138,6 +138,7 @@ app.use(cookieParser())
 
 // Create HTTP server
 const server = http.createServer(app)
+app.options('*', cors());
 
 // Configure Express CORS middleware
 app.use(cors({
