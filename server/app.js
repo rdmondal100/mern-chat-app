@@ -20,7 +20,7 @@ app.use(cookieParser());
 // CORS Configuration
 
 const corsOptions = {
-    origin: process.env.ORIGINS,
+    origin:"https://mern-quick-chat-app.vercel.app",
     methods: ["GET", "POST"],
     credentials: true
 };
