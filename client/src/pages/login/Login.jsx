@@ -1,5 +1,5 @@
 import {Link} from 'react-router'
-import LoginForm from '../../components/auth/Login/LoginForm';
+import LoginForm from '../../components/auth/login/LoginForm';
 import { SiMessenger } from "react-icons/si";
 
 const Login = () => {
