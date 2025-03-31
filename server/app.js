@@ -18,17 +18,9 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(cookieParser());
 
 // CORS Configuration
-const whitelist = process.env.ORIGINS ? process.env.ORIGINS.split(',') : [];
-console.log("Allowed Origins:", whitelist);
 
 const corsOptions = {
-    origin: function (origin, callback) {
-        if (whitelist.includes(origin) || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: process.env.ORIGINS,
     methods: ["GET", "POST"],
     credentials: true
 };
