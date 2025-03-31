@@ -132,52 +132,6 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 			// console.log(allChats);
 		});
 
-		// socket.off("receive-message").on("receive-message", (message) => {
-		// 	console.log(message);
-		// 	const selectedChat = store.getState().chatSlice.selectedChat;
-		// 	// console.log(selectedChat)
-		// 	let allChats = store.getState().chatSlice.allChats;
-		// 	// console.log(allChats)
-		// 	if (!selectedChat?._id || selectedChat?._id !== message?.chatId) {
-		// 		console.log(message, "Message recived by the sender");
-		// 		const updatedChats = allChats?.map((chat) => {
-		// 			if (chat?._id === message?.chatId) {
-		// 				return {
-		// 					...chat,
-		// 					unreadMessageCount: chat?.unreadMessageCount + 1,
-		// 					lastMessage: message,
-		// 				};
-		// 			}
-		// 			return chat;
-		// 		});
-		// 		allChats = updatedChats;
-		// 	}else{
-		// 		const updatedChats = allChats?.map((chat) => {
-		// 			if (chat?._id === message?.chatId) {
-		// 				return {
-		// 					...chat,
-		// 					unreadMessageCount: 0,
-		// 					lastMessage: message,
-		// 				};
-		// 			}
-		// 			return chat;
-		// 		});
-		// 		allChats = updatedChats;
-		// 	}
-
-		// 	console.log(allChats)
-		// 	const latestChat = allChats?.find(
-		// 		(chat) => chat?._id === message?.chatId
-		// 	);
-		// 	console.log(latestChat)
-		// 	const otherChats = allChats?.filter(
-		// 		(chat) => chat?._id !== message?.chatId
-		// 	);
-		// 	console.log(otherChats)
-		// 	allChats = [latestChat, ...otherChats];
-		// 	dispatch(setAllChats({ allChats: allChats }));
-		// 	// console.log(allChats);
-		// });
 	}, [selectedChat?._id]);
 
 	// console.log(allUsersData);
@@ -196,7 +150,7 @@ const UsersList = ({ searchKey, isFocused, setSearchKey, setIsFocused }) => {
 		  );
 	console.log(getUserChatList);
 	return (
-		<div className=' flex flex-col gap-4 user-chats-container'>
+		<div className=' flex flex-col gap-4 user-chats-container  h-[calc(90vh-100px)] overflow-y-auto'>
 			{getUserChatList.length
 				? getUserChatList?.map((item) => {
 						let user = item;

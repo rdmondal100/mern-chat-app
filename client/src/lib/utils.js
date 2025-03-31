@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client'
 import axios from "axios";
 
 export function cn(...inputs) {
@@ -8,15 +8,15 @@ export function cn(...inputs) {
 }
 
 
-export const socket = io('http://192.168.0.104:5000')
+export const socket = io('http://localhost:5000')
 
-export const currentTime=()=> new Date().toISOString().replace('Z', '+00:00');
+export const currentTime = () => new Date().toISOString().replace('Z', '+00:00');
 
 
 export const axiosInstance = axios.create({
-    baseURL: 'http://192.168.0.104:5000',
-    withCredentials:true,
-    headers:{
-      'Content-Type': 'application/json'
-    }
+  baseURL: 'http://localhost:5000',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 })

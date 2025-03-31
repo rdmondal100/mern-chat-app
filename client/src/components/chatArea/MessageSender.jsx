@@ -62,19 +62,27 @@ const MessageSender = () => {
 		}
 	};
 	const handleInput = (e) => {
+		
 		socket.emit("user-typing",{
 			chatId: selectedChat?._id,
 			members: selectedChat?.members?.map(m=>m?._id),
 			sender: userData?._id
 		})
-		const text = e.target.innerText;
-		if (text.trim()) {
-			setMessage(text);
-			setIsPlaceHolder(false);
-		} else {
-			setIsPlaceHolder(true);
-			setMessage(text);
 
+		const text = String(e.target.innerText).trim();
+		const textBoxHtml = e.target.innerHTML;
+
+		const isEmpty = text === "" && 
+		(textBoxHtml === "" || textBoxHtml === "<br>" || textBoxHtml === "<br><br>");
+		console.log(isEmpty)
+setIsPlaceHolder(isEmpty);
+	
+		if (text) {
+			setMessage(text);
+				console.log("text:",text)
+		} else {
+			setMessage(text);
+			console.log("text:",text)
 		}
 	};
 
@@ -83,9 +91,9 @@ const MessageSender = () => {
 	return (
 		<div className=' w-full px-2 h-auto'>
 			<div className='flex w-full  items-center space-x-5 '>
-				<div className=' relative wrapper w-full px-4'>
+				<div className=' relative wrapper pl-2 w-full px-1 ring-1 rounded-xl bg-input  '>
 					{isPlaceHolder && (
-						<span className=' absolute left-9 pointer-events-none top-2 text-sm'>
+						<span className=' absolute left-3 pointer-events-none top-3 text-sm'>
 							Aa
 						</span>
 					)}
@@ -96,10 +104,12 @@ const MessageSender = () => {
 						ref={messageInputRef}
 						onInput={handleInput}
 						aria-placeholder='Aa'
-						className='bg-input ring-1 rounded-2xl w-full py-2 px-4 right-1 focus:outline-none max-h-32 overflow-auto '
-					/>
-				</div>
+						className=' messageInputText   w-full  right-1 focus:outline-none max-h-32 overflow-auto relative h-auto bottom-0 min-h-12 p-2 	'
+					></div>
 				{console.log(message)}
+				
+				
+				</div>
 				{message.trim() ?(<IoSend
 					role='button'
 					type='submit'
@@ -112,7 +122,6 @@ const MessageSender = () => {
 					console.log(message)
 				}}
 				className=" text-primary text-3xl cursor-pointer"/>)}
-				
 			</div>
 		</div>
 	);

@@ -28,7 +28,7 @@ const SideBar = () => {
 				)}
 				<hr className=' mt-2 text-primary h-[.15rem] rounded-full bg-border ' />
 
-				<div className='userList relative overflow-y-scroll h-auto  max-h-[calc(90vh-100px)] pb-20 '>
+				<div className='userList relative h-[calc(90vh-100px)] pb-2 '>
 					{showRequests ? (
 						<FriendRequest />
 					) : (

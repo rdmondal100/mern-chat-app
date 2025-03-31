@@ -12,7 +12,7 @@ const ChatArea = () => {
 			>
 				<MessageArea />
 			</div>
-			<div className='messageSender bottom-0 bg-muted  h-14   p-2 border-t-2 border-border rounded-b-lg fixed  md:absolute w-full '>
+			<div className='messageSender bottom-0 bg-muted   p-2 border-t-2 border-border rounded-b-lg fixed  md:absolute w-full  '>
 				<MessageSender />
 			</div>
 		</div>

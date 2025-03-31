@@ -20,15 +20,15 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
     cors: {
-        origin: 'http://192.168.0.104:5173',
+        origin: 'http://localhost:5173',
         methods: ['GET', 'POST'],
-        credentials:true
+        credentials: true
     }
 })
 
 
 app.use(cors({
-    origin: "http://192.168.0.104:5173",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
 }));
@@ -44,30 +44,30 @@ app.get("/", (req, res) => {
 })
 
 //test soket connection from client
-let onlineUsers = new Map(); 
+let onlineUsers = new Map();
 io.on('connection', socket => {
     socket.on('join-room', userId => {
-    
+
 
     })
 
     socket.on('send-message', (message) => {
         // console.log(message)
         io
-        .to(message?.members[0])
-        .to(message?.members[1])
-        .emit('receive-message',message)
+            .to(message?.members[0])
+            .to(message?.members[1])
+            .emit('receive-message', message)
     })
-    
+
     socket.on('clear-unread-message', (unreadMessage) => {
         // console.log(unreadMessage)
         // console.log(unreadMessage?.members[0])
-        if(unreadMessage?.members[0] && unreadMessage?.members[1]){
+        if (unreadMessage?.members[0] && unreadMessage?.members[1]) {
             io
-            .to(unreadMessage?.members[0])
-            .to(unreadMessage?.members[1])
-            .emit('message-count-cleared',unreadMessage)
-        }else{
+                .to(unreadMessage?.members[0])
+                .to(unreadMessage?.members[1])
+                .emit('message-count-cleared', unreadMessage)
+        } else {
             return
         }
 
@@ -76,20 +76,20 @@ io.on('connection', socket => {
     socket.on('user-typing', (typing) => {
         console.log(typing)
         io
-        .to(typing?.members[0])
-        .to(typing?.members[1])
-        .emit('typing-started',typing)
+            .to(typing?.members[0])
+            .to(typing?.members[1])
+            .emit('typing-started', typing)
     })
 
-    socket.on("user-connected",(userId)=>{
+    socket.on("user-connected", (userId) => {
         socket.join(userId)
-        onlineUsers.set(userId, socket.id); 
+        onlineUsers.set(userId, socket.id);
         console.log("user connected", userId)
         io.emit('online-users', Array.from(onlineUsers.keys()));
     })
 
-    socket.on("user-disconnected",(userId)=>{
-        if(userId){
+    socket.on("user-disconnected", (userId) => {
+        if (userId) {
             onlineUsers.delete(userId)
             io.emit('online-users', Array.from(onlineUsers.keys()));
         }
@@ -100,8 +100,8 @@ io.on('connection', socket => {
 
 
 
-      // Handle user disconnection
-      socket.on('disconnect', () => {
+    // Handle user disconnection
+    socket.on('disconnect', () => {
         // Find the userId for the disconnected socket
         for (let [userId, socketId] of onlineUsers.entries()) {
             if (socketId === socket.id) {
