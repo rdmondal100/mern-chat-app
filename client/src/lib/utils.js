@@ -8,13 +8,13 @@ export function cn(...inputs) {
 }
 
 
-export const socket = io('http://localhost:5000')
+export const socket = io('https://mern-quick-chat-app-server.vercel.app')
 
 export const currentTime = () => new Date().toISOString().replace('Z', '+00:00');
 
 
 export const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://mern-quick-chat-app-server.vercel.app',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
