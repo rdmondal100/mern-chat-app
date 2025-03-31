@@ -17,10 +17,16 @@ app.use(urlencoded({ extended: true, limit: "16kb" }))
 app.use(cookieParser())
 
 const server = http.createServer(app)
-
+const whitelist = process.env.ORIGINS || []
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: function (origin, callback) {
+            if (whitelist.includes(origin) || !origin) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
         methods: ['GET', 'POST'],
         credentials: true
     }
@@ -28,7 +34,13 @@ const io = new Server(server, {
 
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+        if (whitelist.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ["GET", "POST"],
     credentials: true,
 }));

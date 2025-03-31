@@ -11,10 +11,10 @@ connectDb()
             console.log("Error on server:: ", error)
             process.exit(1)
         })
-        const port = process.env.PORT || 5555
+        const port = process.env.PORT || 5000
 
         server.listen(port, '0.0.0.0', () => {
-            console.log(`Server running on http://localhost:${port}`);
+            console.log(`Server running on ${ process.env.BASE_URL + port}`);
         });
 
     })

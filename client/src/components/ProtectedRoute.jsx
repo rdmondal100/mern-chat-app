@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { hideLoader, showLoader } from "../redux/features/loaderSlice";
-import GlobalLoader from "./globalLoader";
+
 import { setUser, setAllUsers } from "../redux/features/userSlice";
 import { setAllChats } from "../redux/features/chatSlice";
 import { getAllChats } from "../services/chatService";
+import GlobalLoader from "./GlobalLoader";
 
 const ProtectedRoute = ({ children, authentication = true }) => {
 	const { isAuthenticated, status, userData } = useSelector(

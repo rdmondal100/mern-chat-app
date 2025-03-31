@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
-import GlobalLoader from "./components/globalLoader";
+import { useSelector } from "react-redux";
+import GlobalLoader from "./components/GlobalLoader";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
