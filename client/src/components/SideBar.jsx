@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Searcher from "./Searcher";
-import UsersList from "./usersList";
+import UsersList from "./UsersList";
 import Header from "./header/Header";
 import { useSelector } from "react-redux";
 import FriendRequest from "./FriendRequest";
