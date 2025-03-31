@@ -138,14 +138,15 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(cookieParser());
 
 // CORS Configuration
-const corsOptions = {
-    origin: "https://mern-quick-chat-app.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
-};
+const allowedOrigins = ['https://mern-quick-chat-app.vercel.app'];
 
-app.use(cors(corsOptions));
+app.use(cors({
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+
 
 // API Routes
 app.use('/api/auth', authRouter);
@@ -163,9 +164,11 @@ const server = app.listen(process.env.PORT || 5000, () => {
 });
 
 // WebSocket Setup
-const io = new Server(server, {
-    cors: corsOptions,
-    transports: ["websocket", "polling"] // Ensure WebSocket & polling transport
+const io = require('socket.io')(server, {
+    cors: {
+        origin: 'https://mern-quick-chat-app.vercel.app',
+        methods: ['GET', 'POST']
+    }
 });
 
 // Socket Events
