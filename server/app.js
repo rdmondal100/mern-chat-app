@@ -141,16 +141,16 @@ const server = http.createServer(app)
 
 // Configure Express CORS middleware
 app.use(cors({
-    origin: "https://mern-quick-chat-app.vercel.app", // client URL must match exactly
-    methods: ["GET", "POST"],
+    origin: "https://mern-quick-chat-app.vercel.app", 
+    methods: ["GET", "POST", "OPTIONS"],
     credentials: true,
 }));
 
 // Configure Socket.IO with CORS (including credentials)
 const io = new Server(server, {
     cors: {
-        origin: "https://mern-quick-chat-app.vercel.app", // allow your frontend
-        methods: ["GET", "POST"],
+        origin: "https://mern-quick-chat-app.vercel.app",
+        methods: ["GET", "POST", "OPTIONS"],
         credentials: true,
     },
 });
