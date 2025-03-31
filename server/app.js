@@ -149,12 +149,11 @@ app.use(cors({
 // Configure Socket.IO with CORS (including credentials)
 const io = new Server(server, {
     cors: {
-        origin: "https://mern-quick-chat-app.vercel.app", // client URL must match exactly
+        origin: "https://mern-quick-chat-app.vercel.app", // allow your frontend
         methods: ["GET", "POST"],
         credentials: true,
     },
-    transports: ["websocket", "polling"]
-})
+});
 
 // API Routes
 app.use('/api/auth', authRouter)
