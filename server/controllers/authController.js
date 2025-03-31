@@ -106,7 +106,8 @@ export const logOutUser = async (req, res) => {
         const token = undefined
         const options = {
             httpOnly: true,
-            secure: false
+            secure: process.env.NODE_ENV === "production",
+            sameSite: 'None',
         }
         res
             .status(200)
