@@ -1,39 +1,27 @@
-import express, { urlencoded } from 'express'
-import authRouter from './routes/authRouter.js'
-import userRouter from './routes/userRouter.js'
-import cookieParser from 'cookie-parser'
-import chatRouter from './routes/chatRouter.js'
-import messageRouter from './routes/messageRouter.js'
-import cors from 'cors'
-import http from 'http'
-import { Server } from 'socket.io'
+import express from 'express';
+import dotenv from 'dotenv';
+import authRouter from './routes/authRouter.js';
+import userRouter from './routes/userRouter.js';
+import cookieParser from 'cookie-parser';
+import chatRouter from './routes/chatRouter.js';
+import messageRouter from './routes/messageRouter.js';
+import cors from 'cors';
+import { Server } from 'socket.io';
 
+dotenv.config(); // Load environment variables
 
-const app = express()
+const app = express();
 
+// Middleware
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '16kb' }));
+app.use(cookieParser());
 
-app.use(express.json({ limit: "50mb" }))
-app.use(urlencoded({ extended: true, limit: "16kb" }))
-app.use(cookieParser())
+// CORS Configuration
+const whitelist = process.env.ORIGINS ? process.env.ORIGINS.split(',') : [];
+console.log("Allowed Origins:", whitelist);
 
-const server = http.createServer(app)
-const whitelist = process.env.ORIGINS || []
-const io = new Server(server, {
-    cors: {
-        origin: function (origin, callback) {
-            if (whitelist.includes(origin) || !origin) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
-        methods: ['GET', 'POST'],
-        credentials: true
-    }
-})
-
-
-app.use(cors({
+const corsOptions = {
     origin: function (origin, callback) {
         if (whitelist.includes(origin) || !origin) {
             callback(null, true);
@@ -42,89 +30,75 @@ app.use(cors({
         }
     },
     methods: ["GET", "POST"],
-    credentials: true,
-}));
+    credentials: true
+};
 
+app.use(cors(corsOptions));
 
-app.use('/api/auth', authRouter)
-app.use('/api/user', userRouter)
-app.use('/api/chat', chatRouter)
-app.use('/api/message', messageRouter)
+// API Routes
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
+app.use('/api/chat', chatRouter);
+app.use('/api/message', messageRouter);
 
 app.get("/", (req, res) => {
-    res.send('<h1> Mern stack chat app </h1>')
-})
+    res.send('<h1>MERN Stack Chat App</h1>');
+});
 
-//test soket connection from client
+// WebSocket Setup
+const server = app.listen(process.env.PORT || 5000, () => {
+    console.log(`Server running on port ${process.env.PORT || 5000}`);
+});
+
+const io = new Server(server, {
+    cors: corsOptions
+});
+
+// Socket Events
 let onlineUsers = new Map();
+
 io.on('connection', socket => {
     socket.on('join-room', userId => {
+        console.log(`${userId} joined room`);
+    });
 
+    socket.on('send-message', message => {
+        io.to(message?.members[0]).to(message?.members[1]).emit('receive-message', message);
+    });
 
-    })
-
-    socket.on('send-message', (message) => {
-        // console.log(message)
-        io
-            .to(message?.members[0])
-            .to(message?.members[1])
-            .emit('receive-message', message)
-    })
-
-    socket.on('clear-unread-message', (unreadMessage) => {
-        // console.log(unreadMessage)
-        // console.log(unreadMessage?.members[0])
+    socket.on('clear-unread-message', unreadMessage => {
         if (unreadMessage?.members[0] && unreadMessage?.members[1]) {
-            io
-                .to(unreadMessage?.members[0])
-                .to(unreadMessage?.members[1])
-                .emit('message-count-cleared', unreadMessage)
-        } else {
-            return
+            io.to(unreadMessage?.members[0]).to(unreadMessage?.members[1]).emit('message-count-cleared', unreadMessage);
         }
+    });
 
-    })
+    socket.on('user-typing', typing => {
+        io.to(typing?.members[0]).to(typing?.members[1]).emit('typing-started', typing);
+    });
 
-    socket.on('user-typing', (typing) => {
-        console.log(typing)
-        io
-            .to(typing?.members[0])
-            .to(typing?.members[1])
-            .emit('typing-started', typing)
-    })
-
-    socket.on("user-connected", (userId) => {
-        socket.join(userId)
+    socket.on('user-connected', userId => {
+        socket.join(userId);
         onlineUsers.set(userId, socket.id);
-        console.log("user connected", userId)
         io.emit('online-users', Array.from(onlineUsers.keys()));
-    })
+    });
 
-    socket.on("user-disconnected", (userId) => {
+    socket.on('user-disconnected', userId => {
         if (userId) {
-            onlineUsers.delete(userId)
+            onlineUsers.delete(userId);
             io.emit('online-users', Array.from(onlineUsers.keys()));
         }
-    })
+    });
 
-
-
-
-
-
-    // Handle user disconnection
     socket.on('disconnect', () => {
-        // Find the userId for the disconnected socket
         for (let [userId, socketId] of onlineUsers.entries()) {
             if (socketId === socket.id) {
-                onlineUsers.delete(userId); // Remove the user from the Map
+                onlineUsers.delete(userId);
                 console.log(`${userId} disconnected`);
                 break;
             }
         }
-
         io.emit('online-users', Array.from(onlineUsers.keys()));
     });
-})
+});
 
-export default server
+export default app;
