@@ -7,6 +7,7 @@ import chatRouter from './routes/chatRouter.js';
 import messageRouter from './routes/messageRouter.js';
 import cors from 'cors';
 import { Server } from 'socket.io';
+import serverless from "serverless-http";
 
 dotenv.config(); // Load environment variables
 
@@ -93,4 +94,4 @@ io.on('connection', socket => {
     });
 });
 
-export default app;
+export default serverless(app);
