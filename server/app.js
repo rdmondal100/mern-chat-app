@@ -118,7 +118,6 @@
 // export default server
 
 
-
 import express from 'express';
 import dotenv from 'dotenv';
 import authRouter from './routes/authRouter.js';
@@ -148,15 +147,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Manually Set CORS Headers (Extra Security)
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://mern-quick-chat-app.vercel.app");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");
-    next();
-});
-
 // API Routes
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
@@ -174,12 +164,7 @@ const server = app.listen(process.env.PORT || 5000, () => {
 
 // WebSocket Setup
 const io = new Server(server, {
-    cors: {
-        origin: "https://mern-quick-chat-app.vercel.app",
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true
-    },
+    cors: corsOptions,
     transports: ["websocket", "polling"] // Ensure WebSocket & polling transport
 });
 
@@ -188,33 +173,39 @@ let onlineUsers = new Map();
 
 io.on('connection', (socket) => {
     console.log(`New connection: ${socket.id}`);
-    console.log(`Handshake Headers:`, socket.handshake.headers);
 
-    socket.on('join-room', userId => {
+    socket.on('join-room', (userId) => {
         console.log(`${userId} joined room`);
+        socket.join(userId);
     });
 
-    socket.on('send-message', message => {
-        io.to(message?.members[0]).to(message?.members[1]).emit('receive-message', message);
-    });
-
-    socket.on('clear-unread-message', unreadMessage => {
-        if (unreadMessage?.members[0] && unreadMessage?.members[1]) {
-            io.to(unreadMessage?.members[0]).to(unreadMessage?.members[1]).emit('message-count-cleared', unreadMessage);
+    socket.on('send-message', (message) => {
+        if (message?.members?.length === 2) {
+            io.to(message.members[0]).to(message.members[1]).emit('receive-message', message);
         }
     });
 
-    socket.on('user-typing', typing => {
-        io.to(typing?.members[0]).to(typing?.members[1]).emit('typing-started', typing);
+    socket.on('clear-unread-message', (unreadMessage) => {
+        if (unreadMessage?.members?.length === 2) {
+            io.to(unreadMessage.members[0])
+              .to(unreadMessage.members[1])
+              .emit('message-count-cleared', unreadMessage);
+        }
     });
 
-    socket.on('user-connected', userId => {
+    socket.on('user-typing', (typing) => {
+        if (typing?.members?.length === 2) {
+            io.to(typing.members[0]).to(typing.members[1]).emit('typing-started', typing);
+        }
+    });
+
+    socket.on('user-connected', (userId) => {
         socket.join(userId);
         onlineUsers.set(userId, socket.id);
         io.emit('online-users', Array.from(onlineUsers.keys()));
     });
 
-    socket.on('user-disconnected', userId => {
+    socket.on('user-disconnected', (userId) => {
         if (userId) {
             onlineUsers.delete(userId);
             io.emit('online-users', Array.from(onlineUsers.keys()));
