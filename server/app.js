@@ -22,7 +22,6 @@ const io = new Server(server, {
     cors: {
         origin: 'https://mern-quick-chat-app.vercel.app',
         methods: ['GET', 'POST'],
-        credentials: true
     }
 })
 
