@@ -52,7 +52,7 @@ app.use('/api/chat', chatRouter)
 app.use('/api/message', messageRouter)
 
 app.get("/", (req, res) => {
-    res.send('<h1> My name is riday modal </h1>')
+    res.send('<h1> Mern stack chat app </h1>')
 })
 
 //test soket connection from client
